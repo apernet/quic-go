@@ -359,9 +359,6 @@ func (h *cryptoSetup) GetSessionTicket() ([]byte, error) {
 	if h.tlsConf.SessionTicketsDisabled {
 		return nil, nil
 	}
-	if err := h.conn.SendSessionTicket(h.allow0RTT); err != nil {
-		return nil, err
-	}
 	ev := h.conn.NextEvent()
 	if ev.Kind != qtls.QUICWriteData || ev.Level != qtls.QUICEncryptionLevelApplication {
 		panic("crypto/tls bug: where's my session ticket?")
