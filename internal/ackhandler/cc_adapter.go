@@ -3,9 +3,9 @@ package ackhandler
 import (
 	"time"
 
-	"github.com/quic-go/quic-go/congestion"
-	cgInternal "github.com/quic-go/quic-go/internal/congestion"
-	"github.com/quic-go/quic-go/internal/protocol"
+	"github.com/apernet/quic-go/congestion"
+	cgInternal "github.com/apernet/quic-go/internal/congestion"
+	"github.com/apernet/quic-go/internal/protocol"
 )
 
 var (
