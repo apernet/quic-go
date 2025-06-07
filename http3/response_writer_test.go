@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	mockquic "github.com/quic-go/quic-go/internal/mocks/quic"
+	mockquic "github.com/apernet/quic-go/internal/mocks/quic"
 
 	"github.com/quic-go/qpack"
 
