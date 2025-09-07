@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/francoispqt/gojay"
-	"github.com/quic-go/quic-go/internal/protocol"
-	"github.com/quic-go/quic-go/internal/wire"
-	"github.com/quic-go/quic-go/logging"
+	"github.com/apernet/quic-go/internal/protocol"
+	"github.com/apernet/quic-go/internal/wire"
+	"github.com/apernet/quic-go/logging"
 	"github.com/stretchr/testify/require"
 )
 

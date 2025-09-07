@@ -7,7 +7,7 @@ import fileinput
 
 
 PKG_ORIGINAL = "github.com/quic-go/quic-go"
-PKG_NEW = "github.com/metacubex/quic-go"
+PKG_NEW = "github.com/apernet/quic-go"
 
 EXTENSIONS = [".go", ".md", ".mod", ".sh"]
 

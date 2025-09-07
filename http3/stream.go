@@ -9,7 +9,7 @@ import (
 	"net/http/httptrace"
 	"time"
 
-	"github.com/quic-go/quic-go"
+	"github.com/apernet/quic-go"
 
 	"github.com/quic-go/qpack"
 )
