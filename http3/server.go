@@ -536,6 +536,7 @@ func (s *Server) handleConn(conn *quic.Conn) error {
 			// or the underlying connection is closed
 			defer wg.Done()
 			s.handleRequest(hconn, str, hconn.decoder)
+			hconn.clearStream(str.StreamID())
 		}()
 	}
 	wg.Wait()
