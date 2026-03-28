@@ -3160,6 +3160,7 @@ func estimateMaxPayloadSize(mtu protocol.ByteCount) protocol.ByteCount {
 
 // SetCongestionControl replace the current congestion control algorithm with a new one.
 func (c *Conn) SetCongestionControl(cc congestion.CongestionControl) {
+	cc.SetMaxDatagramSize(congestion.ByteCount(c.currentMTUEstimate.Load()))
 	c.sentPacketHandler.SetCongestionControl(cc)
 }
 
