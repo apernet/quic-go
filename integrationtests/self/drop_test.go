@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/quic-go/quic-go"
-	"github.com/quic-go/quic-go/internal/protocol"
-	"github.com/quic-go/quic-go/internal/synctest"
-	"github.com/quic-go/quic-go/internal/wire"
-	"github.com/quic-go/quic-go/testutils/simnet"
+	"github.com/apernet/quic-go"
+	"github.com/apernet/quic-go/internal/protocol"
+	"github.com/apernet/quic-go/internal/synctest"
+	"github.com/apernet/quic-go/internal/wire"
+	"github.com/apernet/quic-go/testutils/simnet"
 
 	"github.com/stretchr/testify/require"
 )
