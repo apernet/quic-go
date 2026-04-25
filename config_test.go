@@ -118,6 +118,14 @@ func configWithNonZeroNonFunctionFields(t *testing.T) *Config {
 			f.Set(reflect.ValueOf(time.Second))
 		case "EnableDatagrams":
 			f.Set(reflect.ValueOf(true))
+		case "OmitMaxDatagramFrameSize":
+			f.Set(reflect.ValueOf(true))
+		case "AssumePeerMaxDatagramFrameSize":
+			f.Set(reflect.ValueOf(int64(1337)))
+		case "MaxDatagramFrameSize":
+			f.Set(reflect.ValueOf(int64(1200)))
+		case "DisablePathManager":
+			f.Set(reflect.ValueOf(true))
 		case "DisableVersionNegotiationPackets":
 			f.Set(reflect.ValueOf(true))
 		case "InitialPacketSize":

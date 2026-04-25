@@ -172,6 +172,12 @@ type Config struct {
 	Allow0RTT bool
 	// Enable QUIC datagram support (RFC 9221).
 	EnableDatagrams bool
+	// OmitMaxDatagramFrameSize omits the max_datagram_frame_size transport parameter,
+	// even when QUIC datagram support is enabled.
+	OmitMaxDatagramFrameSize bool
+	// AssumePeerMaxDatagramFrameSize treats peers that omit max_datagram_frame_size
+	// as supporting DATAGRAM frames up to this size. This is a non-standard extension.
+	AssumePeerMaxDatagramFrameSize int64
 	// Enable QUIC Stream Resets with Partial Delivery.
 	// See https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-07.
 	EnableStreamResetPartialDelivery bool
