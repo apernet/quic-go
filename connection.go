@@ -3186,6 +3186,19 @@ func (c *Conn) SetCongestionControl(cc congestion.CongestionControl) {
 	c.sentPacketHandler.SetCongestionControl(cc)
 }
 
+// InitialPacketSize returns the datagram size the connection starts out with,
+// before path MTU discovery raises it. This is the value the connection's own
+// congestion controller is seeded with, and it is not always the package
+// default: options that make the connection start smaller lower it too.
+//
+// A controller installed with SetCongestionControl must be seeded with this,
+// not with the package default. Seeding it high instead breaks as soon as path
+// MTU discovery reports a size between the two, which the connection sees as an
+// increase but the controller sees as a decrease.
+func (c *Conn) InitialPacketSize() congestion.ByteCount {
+	return congestion.ByteCount(c.config.InitialPacketSize)
+}
+
 // SetRemoteAddr Replace the current remote addr with a new one
 func (c *Conn) SetRemoteAddr(addr net.Addr) {
 	c.conn.SetRemoteAddr(addr)
