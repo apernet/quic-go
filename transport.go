@@ -75,6 +75,12 @@ type Transport struct {
 	// If unset, a 4 byte connection ID will be used.
 	ConnectionIDLength int
 
+	// DisableGSO turns off UDP generic segmentation offload, at a cost in
+	// throughput. Set it when packets are rewritten after they leave the stack:
+	// the rewrite hits the combined packet and corrupts every segment but the
+	// first. The send still succeeds, so this cannot be detected automatically.
+	DisableGSO bool
+
 	// Use for generating new connection IDs.
 	// This allows the application to control of the connection IDs used,
 	// which allows routing / load balancing based on connection IDs.
@@ -394,7 +400,7 @@ func (t *Transport) init(allowZeroLengthConnIDs bool) error {
 			conn = c
 		} else {
 			var err error
-			conn, err = wrapConn(t.Conn)
+			conn, err = wrapConn(t.Conn, t.DisableGSO)
 			if err != nil {
 				t.initErr = err
 				return
