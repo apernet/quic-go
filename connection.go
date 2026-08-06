@@ -2059,6 +2059,10 @@ func (c *Conn) handleHandshakeEvents(now monotime.Time) error {
 			c.restoreTransportParameters(ev.TransportParameters)
 			close(c.earlyConnReadyChan)
 		case handshake.EventReceivedReadKeys:
+			// New keys mean the encryption level we send at is about to change, at
+			// which point the imitated client sizes the packet number against the
+			// full datagram again rather than the room left by the last one.
+			c.sentPacketHandler.SetLastDatagramPadding(0)
 			// queue all previously undecryptable packets
 			c.undecryptablePacketsToProcess = append(c.undecryptablePacketsToProcess, c.undecryptablePackets...)
 			c.undecryptablePackets = nil

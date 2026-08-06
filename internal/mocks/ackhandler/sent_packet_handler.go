@@ -602,6 +602,42 @@ func (c *MockSentPacketHandlerSetCongestionControlCall) DoAndReturn(f func(conge
 	return c
 }
 
+// SetLastDatagramPadding mocks base method.
+func (m *MockSentPacketHandler) SetLastDatagramPadding(arg0 protocol.ByteCount) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetLastDatagramPadding", arg0)
+}
+
+// SetLastDatagramPadding indicates an expected call of SetLastDatagramPadding.
+func (mr *MockSentPacketHandlerMockRecorder) SetLastDatagramPadding(arg0 any) *MockSentPacketHandlerSetLastDatagramPaddingCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetLastDatagramPadding", reflect.TypeOf((*MockSentPacketHandler)(nil).SetLastDatagramPadding), arg0)
+	return &MockSentPacketHandlerSetLastDatagramPaddingCall{Call: call}
+}
+
+// MockSentPacketHandlerSetLastDatagramPaddingCall wrap *gomock.Call
+type MockSentPacketHandlerSetLastDatagramPaddingCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockSentPacketHandlerSetLastDatagramPaddingCall) Return() *MockSentPacketHandlerSetLastDatagramPaddingCall {
+	c.Call = c.Call.Return()
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockSentPacketHandlerSetLastDatagramPaddingCall) Do(f func(protocol.ByteCount)) *MockSentPacketHandlerSetLastDatagramPaddingCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockSentPacketHandlerSetLastDatagramPaddingCall) DoAndReturn(f func(protocol.ByteCount)) *MockSentPacketHandlerSetLastDatagramPaddingCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
+
 // SetMaxDatagramSize mocks base method.
 func (m *MockSentPacketHandler) SetMaxDatagramSize(count protocol.ByteCount) {
 	m.ctrl.T.Helper()

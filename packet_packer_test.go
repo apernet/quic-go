@@ -47,6 +47,8 @@ func newTestPacketPacker(t *testing.T, mockCtrl *gomock.Controller, pers protoco
 	initialStream := newInitialCryptoStream(pers == protocol.PerspectiveClient, chaos)
 	handshakeStream := newCryptoStream()
 	pnManager := mockackhandler.NewMockSentPacketHandler(mockCtrl)
+	// Reported for every datagram packed; only the packet number length depends on it.
+	pnManager.EXPECT().SetLastDatagramPadding(gomock.Any()).AnyTimes()
 	framer := NewMockFrameSource(mockCtrl)
 	ackFramer := NewMockAckFrameSource(mockCtrl)
 	sealingManager := NewMockSealingManager(mockCtrl)
