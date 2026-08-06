@@ -219,7 +219,10 @@ func (c *utlsQUICConn) StoreSession(*tls.SessionState) error {
 }
 
 func (c *utlsQUICConn) ConnectionState() tls.ConnectionState {
-	s := c.conn.ConnectionState()
+	return utlsConnectionStateToStd(c.conn.ConnectionState())
+}
+
+func utlsConnectionStateToStd(s utls.ConnectionState) tls.ConnectionState {
 	return tls.ConnectionState{
 		Version:                     s.Version,
 		HandshakeComplete:           s.HandshakeComplete,
@@ -232,6 +235,7 @@ func (c *utlsQUICConn) ConnectionState() tls.ConnectionState {
 		VerifiedChains:              s.VerifiedChains,
 		SignedCertificateTimestamps: s.SignedCertificateTimestamps,
 		OCSPResponse:                s.OCSPResponse,
+		ECHAccepted:                 s.ECHAccepted,
 	}
 }
 
