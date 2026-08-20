@@ -1506,3 +1506,13 @@ func TestFrameSorterPeek(t *testing.T) {
 	p = make([]byte, 10)
 	require.ErrorIs(t, s.Peek(0, p), errTooLittleData)
 }
+
+func TestFrameSorterDoesNotRetainLargeGapMatchBuffer(t *testing.T) {
+	s := newFrameSorter()
+	for offset := 0; offset < 256; offset += 2 {
+		require.NoError(t, s.Push([]byte{0}, protocol.ByteCount(offset), nil))
+	}
+
+	require.NoError(t, s.Push(make([]byte, 256), 0, nil))
+	require.LessOrEqual(t, cap(s.matchedGaps), maxRetainedMatchedGaps)
+}

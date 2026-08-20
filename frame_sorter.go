@@ -5,7 +5,6 @@ import (
 
 	"github.com/apernet/quic-go/internal/protocol"
 	"github.com/apernet/quic-go/internal/utils"
-	"github.com/apernet/quic-go/internal/utils/tree"
 )
 
 // byteInterval is an interval from one ByteCount to the other
@@ -20,16 +19,20 @@ type frameSorterEntry struct {
 }
 
 type frameSorter struct {
-	queue   map[protocol.ByteCount]frameSorterEntry
-	readPos protocol.ByteCount
-	gapTree *tree.Btree[utils.ByteInterval]
+	queue       map[protocol.ByteCount]frameSorterEntry
+	readPos     protocol.ByteCount
+	gapTree     gapSet
+	matchedGaps []utils.ByteInterval
 }
+
+// Keep the common reorder window reusable without pinning pathological high-water allocations.
+const maxRetainedMatchedGaps = 64
 
 var errDuplicateStreamData = errors.New("duplicate stream data")
 
 func newFrameSorter() *frameSorter {
 	s := frameSorter{
-		gapTree: tree.New[utils.ByteInterval](),
+		gapTree: gapSet{hint: -1},
 		queue:   make(map[protocol.ByteCount]frameSorterEntry),
 	}
 	s.gapTree.Insert(utils.ByteInterval{Start: 0, End: protocol.MaxByteCount})
@@ -56,7 +59,12 @@ func (s *frameSorter) push(data []byte, offset protocol.ByteCount, doneCb func()
 	end := offset + protocol.ByteCount(len(data))
 	covInterval := utils.ByteInterval{Start: start, End: end}
 
-	gaps := s.gapTree.Match(covInterval)
+	gaps := s.gapTree.MatchInto(covInterval, s.matchedGaps[:0])
+	if cap(gaps) <= maxRetainedMatchedGaps {
+		s.matchedGaps = gaps
+	} else {
+		s.matchedGaps = nil
+	}
 
 	if len(gaps) == 0 {
 		// No overlap with any existing gap
@@ -121,16 +129,20 @@ func (s *frameSorter) push(data []byte, offset protocol.ByteCount, doneCb func()
 			// The frame covers the whole startGap. Delete the gap.
 			s.gapTree.Delete(startGap)
 		} else {
-			s.gapTree.Delete(startGap)
+			oldStartGap := startGap
 			startGap.Start = end
-			// Re-insert the gap, but with the new start.
-			s.gapTree.Insert(startGap)
+			if !s.gapTree.UpdatePreservingOrder(oldStartGap, startGap) {
+				s.gapTree.Delete(oldStartGap)
+				s.gapTree.Insert(startGap)
+			}
 		}
 	} else if !hasReplacedAtLeastOne {
-		s.gapTree.Delete(startGap)
+		oldStartGap := startGap
 		startGap.End = start
-		// Re-insert the gap, but with the new end.
-		s.gapTree.Insert(startGap)
+		if !s.gapTree.UpdatePreservingOrder(oldStartGap, startGap) {
+			s.gapTree.Delete(oldStartGap)
+			s.gapTree.Insert(startGap)
+		}
 		adjustedStartGapEnd = true
 	}
 
@@ -161,10 +173,12 @@ func (s *frameSorter) push(data []byte, offset protocol.ByteCount, doneCb func()
 			// The frame split the existing gap into two.
 			s.gapTree.Insert(utils.ByteInterval{Start: end, End: startGapEnd})
 		} else if !startGapEqualsEndGap {
-			s.gapTree.Delete(endGap)
+			oldEndGap := endGap
 			endGap.Start = end
-			// Re-insert the gap, but with the new start.
-			s.gapTree.Insert(endGap)
+			if !s.gapTree.UpdatePreservingOrder(oldEndGap, endGap) {
+				s.gapTree.Delete(oldEndGap)
+				s.gapTree.Insert(endGap)
+			}
 		}
 	}
 
